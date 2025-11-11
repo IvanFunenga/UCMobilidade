@@ -83,19 +83,6 @@ Main classes:
 
 ---
 
-##  Implementation Details
-- Language: **Java**
-- Files used:
-  - `utilizadores.txt`
-  - `veiculos.txt`
-  - `alugueres.obj`
-- Object-oriented principles:
-  - Proper encapsulation of attributes.
-  - Use of inheritance and polymorphism (no `instanceof` allowed).
-  - Clear separation of responsibilities per class.
-
----
-
 ##  Deliverables
 - UML Class Diagram (PDF)  
 - All `.java` source files  
