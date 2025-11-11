@@ -3,19 +3,19 @@
 #  UC Mobility System
 
 ## Overview
-**UC Mobility** is a Java application developed for the **University of Coimbra** to manage the rental of mobility vehicles such as **bicycles**, **electric scooters**, and **e-bikes**.  
+UC Mobility is a Java application developed for the **University of Coimbra** to manage the rental of mobility vehicles such as **bicycles**, **electric scooters**, and **e-bikes**.  
 The system allows students and staff members to rent vehicles, add optional services, and calculate rental costs based on usage time and user type.
 
 ---
 
 ##  Objectives
-The main goal of this project is to apply **Object-Oriented Programming (OOP)** concepts — such as inheritance, polymorphism, and encapsulation — in a real-world context.
+The main goal of this project is to apply Object-Oriented Programming (OOP) concepts — such as inheritance, polymorphism, and encapsulation — in a real-world context.
 
 ---
 
 ##  Main Features
 - **Load users and vehicles** from text files at startup.  
-- **Load rentals** from an object file (`alugueres.obj`) if it exists.  
+- **Load rentals** from an object file (alugueres.obj) if it exists.  
 - **Create new rentals** by selecting a user, a vehicle, and optional services.  
 - **List all rentals** with their total costs.  
 - **Save all rentals** to the object file when exiting the program.  
