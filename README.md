@@ -93,4 +93,11 @@ Main classes:
 ---
 
 ##  Authors
-Developed by students of the **University of Coimbra** for the course *Programação Orientada aos Objetos* (OOP).
+Developed by:
+
+- Ivan Funenga (2023222432)  
+- Rodrigo Ceia (2023)  
+
+University of Coimbra  
+Course: *Programação Orientada aos Objetos* (OOP)  
+Academic Year: 2025/2026  
