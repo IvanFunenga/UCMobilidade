@@ -77,7 +77,7 @@ Main classes:
     - `Docente`  
     - `NaoDocente`  
 - `Veiculo` (abstract)  
-  - `Bicicleta`, `Trotinete`, `EBike` (and their variants)  
+  - `Bicicleta`, `VeiculoEletrico` (and their variants)  
 - `ServicosAdicionais`, `Capacete`, `Luz`  
 - `Aluguer` – Links users, vehicles, and optional services.
 
