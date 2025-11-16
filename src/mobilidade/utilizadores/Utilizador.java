@@ -1,45 +1,45 @@
 package mobilidade.utilizadores;
 
+// IMPORTES NECESSÁRIOS (Adicione esta secção)
+import mobilidade.veiculos.BicicletaDupla;
+import mobilidade.veiculos.BicicletaIndividual;
+import mobilidade.veiculos.EBikeBateriaFixa;
+import mobilidade.veiculos.EBikeBateriaRemovivel;
+import mobilidade.veiculos.TrotineteComLCD;
+import mobilidade.veiculos.TrotineteSemLCD;
+
+/**
+ * Classe abstrata que representa um Utilizador do serviço.
+ */
 public abstract class Utilizador {
-    private String nome;
-    private String numMecanografico;
-    private String metodoPagamento;
+    protected String nome;
+    protected String numeroMecanografico;
+    protected String metodoPagamento;
 
-    public Utilizador(){}
-
-    public Utilizador(String nome, String numMecanografico, String metodoPagamento) {
+    public Utilizador(String nome, String numeroMecanografico, String metodoPagamento) {
         this.nome = nome;
-        this.numMecanografico = numMecanografico;
+        this.numeroMecanografico = numeroMecanografico;
         this.metodoPagamento = metodoPagamento;
+    }
+
+    public String getNumeroMecanografico() {
+        return numeroMecanografico;
     }
 
     public String getNome() {
         return nome;
     }
 
-    public String getNumMecanografico() {
-        return numMecanografico;
+    public double getFatorDesconto() {
+        return 1.0; // Sem desconto por defeito
     }
 
-    public String getMetodoPagamento() {
-        return metodoPagamento;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public void setNumMecanografico(String numMecanografico) {
-        this.numMecanografico = numMecanografico;
-    }
-
-    public void setMetodoPagamento(String metodoPagamento) {
-        this.metodoPagamento = metodoPagamento;
-    }
-
-    @Override
-    public String toString() {
-        String s = nome + ", com o número mecanográfico (" + numMecanografico + ") usa o " + metodoPagamento;
-        return s;
-    }
+    // --- Métodos do Padrão Visitor para Preços ---
+    // O Java precisa dos 'imports' para reconhecer estas classes
+    public abstract double getPreco(BicicletaIndividual v);
+    public abstract double getPreco(BicicletaDupla v);
+    public abstract double getPreco(TrotineteSemLCD v);
+    public abstract double getPreco(TrotineteComLCD v);
+    public abstract double getPreco(EBikeBateriaFixa v);
+    public abstract double getPreco(EBikeBateriaRemovivel v);
 }

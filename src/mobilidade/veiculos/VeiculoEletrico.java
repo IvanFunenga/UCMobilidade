@@ -1,20 +1,17 @@
 package mobilidade.veiculos;
 
-public abstract class VeiculoEletrico extends Veiculo{
-    private int bateria;
+/**
+ * Classe abstrata para Veículos Elétricos.
+ */
+public abstract class VeiculoEletrico extends Veiculo {
+    protected int nivelBateria; // Nível da bateria
 
-    public VeiculoEletrico(){}
-
-    public VeiculoEletrico(int id, String localizacao, int bateria){
-        super(id, localizacao);
-        this.bateria = bateria;
+    public VeiculoEletrico(String id, String localizacaoGPS, int nivelBateria) {
+        super(id, localizacaoGPS);
+        this.nivelBateria = nivelBateria;
     }
 
-    public int getBateria() {
-        return bateria;
-    }
-
-    public void setBateria(int bateria) {
-        this.bateria = bateria;
+    public int getNivelBateria() {
+        return nivelBateria;
     }
 }
