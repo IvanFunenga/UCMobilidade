@@ -30,7 +30,8 @@ public class Estudante  extends Utilizador{
 
     @Override
     public String toString() {
-        String s = "Estudante de " + curso + " que estuda no " + polo;
-        return s;
+        return super.toString() +
+                " e estuda " + curso +
+                " no " + polo;
     }
 }

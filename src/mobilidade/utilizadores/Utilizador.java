@@ -39,7 +39,7 @@ public abstract class Utilizador {
 
     @Override
     public String toString() {
-        String s = nome + " com o número mecanográfico (" + numMecanografico + ") usa o " + metodoPagamento;
+        String s = nome + ", com o número mecanográfico (" + numMecanografico + ") usa o " + metodoPagamento;
         return s;
     }
 }
