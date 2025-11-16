@@ -79,7 +79,7 @@ Main classes:
 - `Veiculo` (abstract)  
   - `Bicicleta`, `VeiculoEletrico` (and their variants)  
 - `ServicosAdicionais`, `Capacete`, `Luz`  
-- `Aluguer` – Links users, vehicles, and optional services.
+- `mobilidade.Aluguer` – Links users, vehicles, and optional services.
 
 ---
 
