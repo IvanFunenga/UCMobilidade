@@ -202,25 +202,62 @@ public class GestorMobilidade {
     // 2. PERSISTÊNCIA DE ALUGUERES (BINÁRIO)
     // ==========================================
 
+    @SuppressWarnings("unchecked")
     public void carregarAlugueres(String nomeFicheiro) {
         File f = new File(nomeFicheiro);
-        if (!f.exists()) {
-            System.out.println("Nenhum histórico de alugueres encontrado (primeira execução).");
-            return;
-        }
 
-        // TODO: Implementar leitura de objetos
-        // try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f))) {
-        //     this.alugueres = (ArrayList<Aluguer>) ois.readObject();
-        // } catch ...
+        // 1. Verificar se existe E se é um ficheiro [cite: 199]
+        if (f.exists() && f.isFile()) {
+            try {
+                // SEGURO CONTRA FICHEIRO VAZIO:
+                // Se o ficheiro tiver 0 bytes, não tentamos ler objetos
+                if (f.length() == 0) {
+                    System.out.println("Ficheiro de alugueres existe mas está vazio.");
+                    return;
+                }
+
+                FileInputStream fis = new FileInputStream(f); // [cite: 274]
+                ObjectInputStream ois = new ObjectInputStream(fis); // [cite: 274]
+
+                this.alugueres = (ArrayList<Aluguer>) ois.readObject(); // [cite: 275]
+
+                ois.close(); // [cite: 277]
+                System.out.println(alugueres.size() + " alugueres carregados do histórico.");
+
+            } catch (EOFException ex) { //
+                // Captura específica caso o ficheiro termine inesperadamente
+                System.out.println("Ficheiro de alugueres terminou inesperadamente (vazio ou corrompido).");
+            } catch (FileNotFoundException ex) { // [cite: 278]
+                System.out.println("Erro a abrir ficheiro de alugueres.");
+            } catch (IOException ex) { //
+                System.out.println("Erro a ler ficheiro de alugueres: " + ex.getMessage());
+            } catch (ClassNotFoundException ex) { // [cite: 282]
+                System.out.println("Erro a converter objeto.");
+            }
+        } else {
+            System.out.println("Nenhum histórico de alugueres encontrado (iniciando lista vazia).");
+        }
     }
 
+    // Baseado no Slide 21: "Escrever ficheiro de objetos"
     public void guardarAlugueres(String nomeFicheiro) {
-        // TODO: Implementar escrita de objetos
-        // try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(nomeFicheiro))) {
-        //     oos.writeObject(this.alugueres);
-        // } catch ...
-        System.out.println("A guardar alugueres... (Não implementado)");
+        File f = new File(nomeFicheiro);
+
+        try {
+            FileOutputStream fos = new FileOutputStream(f);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+            // Escrever a lista inteira de uma vez
+            oos.writeObject(this.alugueres);
+
+            oos.close();
+            System.out.println("Alugueres guardados com sucesso em " + nomeFicheiro);
+
+        } catch (FileNotFoundException ex) {
+            System.out.println("Erro a criar ficheiro de alugueres.");
+        } catch (IOException ex) {
+            System.out.println("Erro a escrever para o ficheiro de alugueres: " + ex.getMessage());
+        }
     }
 
     // ==========================================
@@ -257,7 +294,10 @@ public class GestorMobilidade {
      * Adiciona um novo aluguer à lista.
      */
     public void registarAluguer(Aluguer a) {
-        this.alugueres.add(a);
+        // Boa prática: validar se não é nulo
+        if (a != null) {
+            this.alugueres.add(a);
+        }
     }
 
     /**

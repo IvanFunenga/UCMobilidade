@@ -14,7 +14,7 @@ public class Main {
         System.out.println("A carregar dados...");
         gestor.carregarUtilizadores("dados/utilizadores.txt");
         gestor.carregarVeiculos("dados/veiculos.txt");
-        //gestor.carregarAlugueres("alugueres.obj");
+        gestor.carregarAlugueres("dados/alugueres.obj");
 
         Scanner sc = new Scanner(System.in);
         int opcao = -1;
@@ -42,7 +42,7 @@ public class Main {
                         break;
                     case 0:
                         System.out.println("A terminar...");
-                        // Guardar os dados nos ficheiros
+                        gestor.guardarAlugueres("dados/alugueres.obj");
                         break;
                     default:
                         System.out.println("Opção inválida.");

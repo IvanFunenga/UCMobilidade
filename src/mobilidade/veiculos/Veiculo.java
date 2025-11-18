@@ -2,10 +2,12 @@ package mobilidade.veiculos;
 
 import mobilidade.utilizadores.Utilizador;
 
+import java.io.Serializable;
+
 /**
  * Classe abstrata que representa um Veículo genérico.
  */
-public abstract class Veiculo {
+public abstract class Veiculo implements Serializable {
     protected String id; // Identificador de 4 dígitos
     protected String localizacaoGPS;
     protected boolean emUso;

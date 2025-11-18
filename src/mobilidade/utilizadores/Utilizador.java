@@ -7,11 +7,12 @@ import mobilidade.veiculos.EBikeBateriaFixa;
 import mobilidade.veiculos.EBikeBateriaRemovivel;
 import mobilidade.veiculos.TrotineteComLCD;
 import mobilidade.veiculos.TrotineteSemLCD;
+import java.io.Serializable;
 
 /**
  * Classe abstrata que representa um Utilizador do serviço.
  */
-public abstract class Utilizador {
+public abstract class Utilizador implements Serializable {
     protected String nome;
     protected String numeroMecanografico;
     protected String metodoPagamento;

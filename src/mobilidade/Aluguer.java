@@ -3,11 +3,13 @@ package mobilidade;
 import mobilidade.utilizadores.Utilizador;
 import mobilidade.veiculos.Veiculo;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.io.Serializable;
 
-public class Aluguer {
+public class Aluguer implements Serializable {
     private Utilizador utilizador;
     private Veiculo veiculo;
     private LocalDateTime dataHoraInicio;
@@ -28,7 +30,7 @@ public class Aluguer {
      * Calcula o custo total do aluguer, aplicando todas as regras do enunciado.
      * @return O custo final em Euros.
      */
-    public double calcularCusto() {
+    double calcularCusto() {
         // 1. Calcular Duração
         Duration duracao = Duration.between(dataHoraInicio, dataHoraFim);
         long totalMinutos = duracao.toMinutes(); // Necessita de ser long para realizar .tominutes()
