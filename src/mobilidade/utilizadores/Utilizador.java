@@ -35,7 +35,6 @@ public abstract class Utilizador {
     }
 
     // --- Métodos do Padrão Visitor para Preços ---
-    // O Java precisa dos 'imports' para reconhecer estas classes
     public abstract double getPreco(BicicletaIndividual v);
     public abstract double getPreco(BicicletaDupla v);
     public abstract double getPreco(TrotineteSemLCD v);

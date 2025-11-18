@@ -7,9 +7,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-/**
- * Representa um aluguer, associando um Utilizador a um Veículo.
- */
 public class Aluguer {
     private Utilizador utilizador;
     private Veiculo veiculo;
@@ -34,11 +31,11 @@ public class Aluguer {
     public double calcularCusto() {
         // 1. Calcular Duração
         Duration duracao = Duration.between(dataHoraInicio, dataHoraFim);
-        long totalMinutos = duracao.toMinutes();
+        long totalMinutos = duracao.toMinutes(); // Necessita de ser long para realizar .tominutes()
         if (totalMinutos <= 0) return 0.0;
 
         // 2. Calcular Horas Faturadas (Regra das 24h = 8h) [cite: 29]
-        long diasCompletos = totalMinutos / (24 * 60);
+        long diasCompletos = totalMinutos / (24 * 60); // Necessitam ser long devido à variável totalMinutos
         long minutosRestantes = totalMinutos % (24 * 60);
 
         // Converte minutos restantes para horas fracionadas
@@ -49,9 +46,12 @@ public class Aluguer {
         double custoHoraVeiculo = veiculo.getCusto(utilizador);
         double custoTotalVeiculo = horasFaturadas * custoHoraVeiculo;
 
-        // 4. Custo dos Serviços Adicionais [cite: 30]
-        // "por dia", calculamos dias totais (arredondado para cima)
-        long diasServico = (long) Math.ceil(totalMinutos / (24.0 * 60.0));
+        long diasServico;
+        if (minutosRestantes > 0) {
+            diasServico = diasCompletos + 1;
+        } else {
+            diasServico = diasCompletos;
+        }
 
         double custoServicos = 0.0;
         if (incluiCapacete) {
