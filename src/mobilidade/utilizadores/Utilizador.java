@@ -1,6 +1,6 @@
 package mobilidade.utilizadores;
 
-// IMPORTES NECESSÁRIOS (Adicione esta secção)
+// IMPORTES NECESSÁRIOS
 import mobilidade.veiculos.BicicletaDupla;
 import mobilidade.veiculos.BicicletaIndividual;
 import mobilidade.veiculos.EBikeBateriaFixa;
