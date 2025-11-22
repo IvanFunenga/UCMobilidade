@@ -15,7 +15,6 @@ public class GestorMobilidade {
         this.utilizadores = new ArrayList<>();
         this.veiculos = new ArrayList<>();
         this.alugueres = new ArrayList<>();
-        this.alugueres = new ArrayList<>();
     }
 
     // ==========================================
@@ -32,7 +31,7 @@ public class GestorMobilidade {
         int numeroLinha = 0;
 
         try (Scanner scanner = new Scanner(f)) {
-            while (scanner.hasNextLine()) { // hasNextLine retorna true caso exista mais linhas
+            while (scanner.hasNextLine()) {
                 String linhaTexto = scanner.nextLine();
                 numeroLinha++;
 
@@ -41,52 +40,59 @@ public class GestorMobilidade {
                 String[] dados = linhaTexto.split(";");
 
                 if (dados.length < 4) {
-                    System.out.println("[Linha " + numeroLinha + "] Erro: Dados insuficientes (esperados min. 4, encontrados " + dados.length + "). Conteúdo: " + linhaTexto);
+                    System.out.println("[Linha " + numeroLinha + "] Erro: Dados insuficientes. Ignorado.");
                     continue;
                 }
 
-                // Recolhe os dados que são iguais independentemente do tipo de utilizador
                 String tipo = dados[0].trim().toUpperCase();
                 String nome = dados[1].trim();
-                String id = dados[2].trim();
+                String id = dados[2].trim(); // Este é o número mecanográfico
                 String pagamento = dados[3].trim();
+
+                // === VALIDAÇÃO DE INPUT (10 DÍGITOS) ===
+                if (!validarFormatoId(id, 10)) {
+                    System.out.println("[Linha " + numeroLinha + "] Erro: ID de utilizador '" + id + "' inválido. Deve ter exatos 10 dígitos numéricos. Ignorado.");
+                    continue;
+                }
+
+                // === VALIDAÇÃO DE DUPLICADOS ===
+                if (procurarUtilizador(id) != null) {
+                    System.out.println("[Linha " + numeroLinha + "] Erro: Utilizador com ID " + id + " já existe no sistema. Ignorado.");
+                    continue;
+                }
 
                 try {
                     switch (tipo) {
                         case "ESTUDANTE":
-                            // ESTUDANTE;Nome;ID;Pagamento;Curso;Polo
                             if (dados.length >= 6) {
                                 String curso = dados[4].trim();
                                 String polo = dados[5].trim();
                                 utilizadores.add(new Estudante(nome, id, pagamento, curso, polo));
                             } else {
-                                System.out.println("[Linha " + numeroLinha + "] Erro: Estudante com campos em falta. Esperado Curso e Pólo.");
+                                System.out.println("[Linha " + numeroLinha + "] Erro: Estudante incompleto.");
                             }
                             break;
 
                         case "NAODOCENTE":
-                            // NAODOCENTE;Nome;ID;Pagamento;Ano;Departamento
                             if (dados.length >= 6) {
                                 int ano = Integer.parseInt(dados[4].trim());
                                 String servico = dados[5].trim();
                                 utilizadores.add(new NaoDocente(nome, id, pagamento, ano, servico));
                             } else {
-                                System.out.println("[Linha " + numeroLinha + "] Erro: Não Docente com campos em falta. Esperado Ano e Serviço.");
+                                System.out.println("[Linha " + numeroLinha + "] Erro: Não Docente incompleto.");
                             }
                             break;
 
                         case "DOCENTE":
-                            // DOCENTE;Nome;ID;Pagamento;Ano;Fac1;Fac2...
                             if (dados.length >= 6) {
                                 int ano = Integer.parseInt(dados[4].trim());
                                 ArrayList<String> faculdades = new ArrayList<>();
                                 for (int i = 5; i < dados.length; i++) {
                                     faculdades.add(dados[i].trim());
                                 }
-
                                 utilizadores.add(new Docente(nome, id, pagamento, ano, faculdades));
                             } else {
-                                System.out.println("[Linha " + numeroLinha + "] Erro: Docente com campos em falta. Esperado Ano e pelo menos uma Faculdade.");
+                                System.out.println("[Linha " + numeroLinha + "] Erro: Docente incompleto.");
                             }
                             break;
 
@@ -97,7 +103,7 @@ public class GestorMobilidade {
                     System.out.println("[Linha " + numeroLinha + "] Erro crítico ao criar objeto: " + e.getMessage());
                 }
             }
-            System.out.println(utilizadores.size() + " carregados com sucesso!");
+            System.out.println(utilizadores.size() + " utilizadores carregados com sucesso!");
         } catch (FileNotFoundException e) {
             System.out.println("Erro ao abrir ficheiro: " + e.getMessage());
         }
@@ -117,69 +123,73 @@ public class GestorMobilidade {
                 String linhaTexto = scanner.nextLine();
                 numeroLinha++;
 
-                if (linhaTexto.trim().isEmpty()) continue; // Ignorar linhas vazias
+                if (linhaTexto.trim().isEmpty()) continue;
 
                 String[] dados = linhaTexto.split(";");
 
-                // Validação mínima: TIPO;ID;LOCALIZAÇÃO (pelo menos 3 campos obrigatórios)
                 if (dados.length < 3) {
-                    System.out.println("[Linha " + numeroLinha + "] Erro: Dados insuficientes. Conteúdo: " + linhaTexto);
+                    System.out.println("[Linha " + numeroLinha + "] Erro: Dados insuficientes. Ignorado.");
                     continue;
                 }
 
                 String tipo = dados[0].trim().toUpperCase();
-                String id = dados[1].trim();
+                String id = dados[1].trim(); // ID do veículo
                 String gps = dados[2].trim();
+
+                // === VALIDAÇÃO DE INPUT (4 DÍGITOS) ===
+                if (!validarFormatoId(id, 4)) {
+                    System.out.println("[Linha " + numeroLinha + "] Erro: ID de veículo '" + id + "' inválido. Deve ter exatos 4 dígitos numéricos. Ignorado.");
+                    continue;
+                }
+
+                // === VALIDAÇÃO DE DUPLICADOS ===
+                if (procurarVeiculo(id) != null) {
+                    System.out.println("[Linha " + numeroLinha + "] Erro: Veículo com ID " + id + " já existe. Ignorado.");
+                    continue;
+                }
 
                 try {
                     switch (tipo) {
                         case "BICICLETA":
-                            // Formato: BICICLETA;ID;GPS;TIPO(INDIVIDUAL/DUPLA)
                             if (dados.length >= 4) {
                                 String subTipo = dados[3].trim().toUpperCase();
                                 if (subTipo.equals("DUPLA")) {
                                     veiculos.add(new BicicletaDupla(id, gps));
                                 } else {
-                                    // Assume individual se for "INDIVIDUAL" ou outro valor
                                     veiculos.add(new BicicletaIndividual(id, gps));
                                 }
                             } else {
-                                // Default se faltar o subtipo
                                 veiculos.add(new BicicletaIndividual(id, gps));
                             }
                             break;
 
                         case "TROTINETE":
-                            // Formato: TROTINETE;ID;GPS;AUTONOMIA;TEM_LCD(SIM/NAO)
                             if (dados.length >= 5) {
                                 int autonomia = Integer.parseInt(dados[3].trim());
                                 String temLCD = dados[4].trim().toUpperCase();
 
-                                // Instancia a classe específica baseada na flag
                                 if (temLCD.equals("SIM") || temLCD.equals("COM_LCD") || temLCD.equals("TRUE")) {
                                     veiculos.add(new TrotineteComLCD(id, gps, autonomia));
                                 } else {
                                     veiculos.add(new TrotineteSemLCD(id, gps, autonomia));
                                 }
                             } else {
-                                System.out.println("[Linha " + numeroLinha + "] Erro: Trotinete requer Autonomia e info de LCD.");
+                                System.out.println("[Linha " + numeroLinha + "] Erro: Trotinete incompleta.");
                             }
                             break;
 
                         case "EBIKE":
-                            // Formato: EBIKE;ID;GPS;AUTONOMIA;BATERIA(FIXA/REMOVIVEL)
                             if (dados.length >= 5) {
                                 int autonomia = Integer.parseInt(dados[3].trim());
                                 String tipoBateria = dados[4].trim().toUpperCase();
 
-                                // Instancia a classe específica baseada no tipo de bateria
                                 if (tipoBateria.equals("REMOVIVEL")) {
                                     veiculos.add(new EBikeBateriaRemovivel(id, gps, autonomia));
                                 } else {
                                     veiculos.add(new EBikeBateriaFixa(id, gps, autonomia));
                                 }
                             } else {
-                                System.out.println("[Linha " + numeroLinha + "] Erro: E-Bike requer Autonomia e tipo de Bateria.");
+                                System.out.println("[Linha " + numeroLinha + "] Erro: E-Bike incompleta.");
                             }
                             break;
 
@@ -187,7 +197,7 @@ public class GestorMobilidade {
                             System.out.println("[Linha " + numeroLinha + "] Tipo de veículo desconhecido: " + tipo);
                     }
                 } catch (NumberFormatException e) {
-                    System.out.println("[Linha " + numeroLinha + "] Erro: Formato numérico inválido (provavelmente na Autonomia).");
+                    System.out.println("[Linha " + numeroLinha + "] Erro: Formato numérico inválido (Autonomia). Ignorado.");
                 } catch (Exception e) {
                     System.out.println("[Linha " + numeroLinha + "] Erro crítico ao criar veículo: " + e.getMessage());
                 }
@@ -206,40 +216,24 @@ public class GestorMobilidade {
     public void carregarAlugueres(String nomeFicheiro) {
         File f = new File(nomeFicheiro);
 
-        // 1. Verificar se existe E se é um ficheiro [cite: 199]
         if (f.exists() && f.isFile()) {
             try {
-                // SEGURO CONTRA FICHEIRO VAZIO:
-                // Se o ficheiro tiver 0 bytes, não tentamos ler objetos
-                if (f.length() == 0) {
-                    System.out.println("Ficheiro de alugueres existe mas está vazio.");
-                    return;
-                }
+                if (f.length() == 0) return;
 
-                FileInputStream fis = new FileInputStream(f); // [cite: 274]
-                ObjectInputStream ois = new ObjectInputStream(fis); // [cite: 274]
+                FileInputStream fis = new FileInputStream(f);
+                ObjectInputStream ois = new ObjectInputStream(fis);
 
-                this.alugueres = (ArrayList<Aluguer>) ois.readObject(); // [cite: 275]
+                this.alugueres = (ArrayList<Aluguer>) ois.readObject();
 
-                ois.close(); // [cite: 277]
+                ois.close();
                 System.out.println(alugueres.size() + " alugueres carregados do histórico.");
 
-            } catch (EOFException ex) { //
-                // Captura específica caso o ficheiro termine inesperadamente
-                System.out.println("Ficheiro de alugueres terminou inesperadamente (vazio ou corrompido).");
-            } catch (FileNotFoundException ex) { // [cite: 278]
-                System.out.println("Erro a abrir ficheiro de alugueres.");
-            } catch (IOException ex) { //
-                System.out.println("Erro a ler ficheiro de alugueres: " + ex.getMessage());
-            } catch (ClassNotFoundException ex) { // [cite: 282]
-                System.out.println("Erro a converter objeto.");
+            } catch (Exception ex) {
+                System.out.println("Aviso: Não foi possível carregar o histórico de alugueres (ficheiro vazio ou incompatível).");
             }
-        } else {
-            System.out.println("Nenhum histórico de alugueres encontrado (iniciando lista vazia).");
         }
     }
 
-    // Baseado no Slide 21: "Escrever ficheiro de objetos"
     public void guardarAlugueres(String nomeFicheiro) {
         File f = new File(nomeFicheiro);
 
@@ -247,27 +241,28 @@ public class GestorMobilidade {
             FileOutputStream fos = new FileOutputStream(f);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
 
-            // Escrever a lista inteira de uma vez
             oos.writeObject(this.alugueres);
 
             oos.close();
-            System.out.println("Alugueres guardados com sucesso em " + nomeFicheiro);
+            System.out.println("Alugueres guardados com sucesso.");
 
-        } catch (FileNotFoundException ex) {
-            System.out.println("Erro a criar ficheiro de alugueres.");
         } catch (IOException ex) {
-            System.out.println("Erro a escrever para o ficheiro de alugueres: " + ex.getMessage());
+            System.out.println("Erro a guardar alugueres: " + ex.getMessage());
         }
     }
 
     // ==========================================
-    // 3. MÉTODOS DE APOIO À MAIN (Interação)
+    // 3. MÉTODOS DE APOIO E VALIDAÇÃO
     // ==========================================
 
     /**
-     * Procura um utilizador pelo número mecanográfico.
-     * @return O objeto Utilizador ou null se não existir.
+     * Verifica se um ID tem o tamanho exato e contém apenas números.
      */
+    private boolean validarFormatoId(String id, int tamanhoEsperado) {
+        // Verifica se não é nulo, se tem o tamanho certo e se só tem dígitos (\d+)
+        return id != null && id.length() == tamanhoEsperado && id.matches("\\d+");
+    }
+
     public Utilizador procurarUtilizador(String id) {
         for (Utilizador u : utilizadores) {
             if (u.getNumeroMecanografico().equalsIgnoreCase(id)) {
@@ -277,10 +272,6 @@ public class GestorMobilidade {
         return null;
     }
 
-    /**
-     * Procura um veículo pelo ID (ex: B101).
-     * @return O objeto Veiculo ou null se não existir.
-     */
     public Veiculo procurarVeiculo(String id) {
         for (Veiculo v : veiculos) {
             if (v.getId().equalsIgnoreCase(id)) {
@@ -290,24 +281,16 @@ public class GestorMobilidade {
         return null;
     }
 
-    /**
-     * Adiciona um novo aluguer à lista.
-     */
     public void registarAluguer(Aluguer a) {
-        // Boa prática: validar se não é nulo
         if (a != null) {
             this.alugueres.add(a);
         }
     }
 
-    /**
-     * Devolve a lista de alugueres para ser mostrada na Main.
-     */
     public ArrayList<Aluguer> getAlugueres() {
         return this.alugueres;
     }
 
-    // Getters opcionais (para debug ou listagens simples)
     public ArrayList<Utilizador> getUtilizadores() { return utilizadores; }
     public ArrayList<Veiculo> getVeiculos() { return veiculos; }
 }
